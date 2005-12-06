@@ -53,7 +53,6 @@ Cordless Mouse.
 Ten pakiet zawiera sterownik dla Linuksa SMP do myszy USB Logitech
 MediaPlay Cordless.
 
-
 %prep
 %setup -q -n lmpcm_usb-%{version}
 
