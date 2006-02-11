@@ -63,15 +63,16 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 	if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
 		exit 1
 	fi
-	install -d o/include/{linux,config}
+	install -d o/include/linux
 	ln -sf %{_kernelsrcdir}/config-$cfg o/.config
 	ln -sf %{_kernelsrcdir}/Module.symvers-$cfg o/Module.symvers
 	ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h o/include/linux/autoconf.h
 %if %{with dist_kernel}
 	%{__make} -C %{_kernelsrcdir} O=$PWD/o prepare scripts
 %else
-	ln -sf %{_kernelsrcdir}/scripts o/scripts
+	install -d o/include/config
 	touch o/include/config/MARKER
+	ln -sf %{_kernelsrcdir}/scripts o/scripts
 %endif
 	%{__make} -C %{_kernelsrcdir} clean \
 		RCS_FIND_IGNORE="-name '*.ko' -o" \
