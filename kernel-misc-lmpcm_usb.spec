@@ -4,11 +4,11 @@
 %bcond_without	smp		# don't build SMP module
 %bcond_with	verbose		# verbose build (V=1)
 #
+%define		_rel	1
 Summary:	USB Logitech MediaPlay Cordless Mouse driver for Linux
 Summary(pl):	Sterownik do myszy USB Logitech MediaPlay Cordless
 Name:		kernel-misc-lmpcm_usb
 Version:	0.5.2
-%define		_rel	1
 Release:	%{_rel}@%{_kernel_ver_str}
 License:	GPL v2
 Group:		Base/Kernel
@@ -82,7 +82,7 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 		CC="%{__cc}" CPP="%{__cpp}" \
 		M=$PWD O=$PWD/o \
 		%{?with_verbose:V=1}
-	
+
 	mv *.ko built/$cfg
 done
 
