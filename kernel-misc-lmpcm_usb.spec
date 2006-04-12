@@ -15,7 +15,7 @@ Group:		Base/Kernel
 Source0:	http://daemon.prozone.ws/~david/projects/lmpcm_usb/lmpcm_usb-%{version}.tar.gz
 # Source0-md5:	551279d6bea3ee6252d9b4a62cc185a6
 URL:		http://daemon.prozone.ws/~david/projects/lmpcm_usb/
-%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
+%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 3:2.6.7}
 BuildRequires:	rpmbuild(macros) >= 1.217
 Requires(post,postun):	/sbin/depmod
 %if %{with dist_kernel}
