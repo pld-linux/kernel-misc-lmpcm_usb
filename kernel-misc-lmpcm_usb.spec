@@ -7,7 +7,7 @@
 %define		_rel	1
 Summary:	USB Logitech MediaPlay Cordless Mouse driver for Linux
 Summary(pl):	Sterownik do myszy USB Logitech MediaPlay Cordless
-Name:		kernel-misc-lmpcm_usb
+Name:		kernel%{_alt_kernel}-misc-lmpcm_usb
 Version:	0.5.4
 Release:	%{_rel}@%{_kernel_ver_str}
 License:	GPL v2
@@ -15,8 +15,8 @@ Group:		Base/Kernel
 Source0:	http://daemon.prozone.ws/~david/projects/lmpcm_usb/lmpcm_usb-%{version}.tar.gz
 # Source0-md5:	1e742084a7e250d599f69adf944b7a9f
 URL:		http://daemon.prozone.ws/~david/projects/lmpcm_usb/
-%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 3:2.6.7}
-BuildRequires:	rpmbuild(macros) >= 1.217
+%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.7}
+BuildRequires:	rpmbuild(macros) >= 1.308
 Requires(post,postun):	/sbin/depmod
 %if %{with dist_kernel}
 %requires_releq_kernel_up
@@ -33,7 +33,7 @@ Cordless Mouse.
 Ten pakiet zawiera sterownik dla Linuksa do myszy USB Logitech
 MediaPlay Cordless.
 
-%package -n kernel-smp-misc-lmpcm_usb
+%package -n kernel%{_alt_kernel}-smp-misc-lmpcm_usb
 Summary:	USB Logitech MediaPlay Cordless Mouse driver for Linux SMP
 Summary(pl):	Sterownik do myszy USB Logitech MediaPlay Cordless
 Release:	%{_rel}@%{_kernel_ver_str}
@@ -45,11 +45,11 @@ Requires(postun):	%releq_kernel_smp
 %endif
 Provides:	kernel(lmpcm_usb)
 
-%description -n kernel-smp-misc-lmpcm_usb
+%description -n kernel%{_alt_kernel}-smp-misc-lmpcm_usb
 This package contains the Linux SMP driver for USB Logitech MediaPlay
 Cordless Mouse.
 
-%description -n kernel-smp-misc-lmpcm_usb -l pl
+%description -n kernel%{_alt_kernel}-smp-misc-lmpcm_usb -l pl
 Ten pakiet zawiera sterownik dla Linuksa SMP do myszy USB Logitech
 MediaPlay Cordless.
 
@@ -108,10 +108,10 @@ rm -rf $RPM_BUILD_ROOT
 %postun
 %depmod %{_kernel_ver}
 
-%post	-n kernel-smp-misc-lmpcm_usb
+%post	-n kernel%{_alt_kernel}-smp-misc-lmpcm_usb
 %depmod %{_kernel_ver}smp
 
-%postun -n kernel-smp-misc-lmpcm_usb
+%postun -n kernel%{_alt_kernel}-smp-misc-lmpcm_usb
 %depmod %{_kernel_ver}smp
 
 %files
@@ -120,7 +120,7 @@ rm -rf $RPM_BUILD_ROOT
 /lib/modules/%{_kernel_ver}/misc/*
 
 %if %{with smp} && %{with dist_kernel}
-%files -n kernel-smp-misc-lmpcm_usb
+%files -n kernel%{_alt_kernel}-smp-misc-lmpcm_usb
 %defattr(644,root,root,755)
 %doc ChangeLog README
 /lib/modules/%{_kernel_ver}smp/misc/*
