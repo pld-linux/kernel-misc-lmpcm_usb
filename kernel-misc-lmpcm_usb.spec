@@ -6,7 +6,7 @@
 #
 %define		_rel	1
 Summary:	USB Logitech MediaPlay Cordless Mouse driver for Linux
-Summary(pl):	Sterownik do myszy USB Logitech MediaPlay Cordless
+Summary(pl.UTF-8):   Sterownik do myszy USB Logitech MediaPlay Cordless
 Name:		kernel%{_alt_kernel}-misc-lmpcm_usb
 Version:	0.5.4
 Release:	%{_rel}@%{_kernel_ver_str}
@@ -29,13 +29,13 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 This package contains the Linux driver for USB Logitech MediaPlay
 Cordless Mouse.
 
-%description -l pl
+%description -l pl.UTF-8
 Ten pakiet zawiera sterownik dla Linuksa do myszy USB Logitech
 MediaPlay Cordless.
 
 %package -n kernel%{_alt_kernel}-smp-misc-lmpcm_usb
 Summary:	USB Logitech MediaPlay Cordless Mouse driver for Linux SMP
-Summary(pl):	Sterownik do myszy USB Logitech MediaPlay Cordless
+Summary(pl.UTF-8):   Sterownik do myszy USB Logitech MediaPlay Cordless
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 Requires(post,postun):	/sbin/depmod
@@ -49,7 +49,7 @@ Provides:	kernel(lmpcm_usb)
 This package contains the Linux SMP driver for USB Logitech MediaPlay
 Cordless Mouse.
 
-%description -n kernel%{_alt_kernel}-smp-misc-lmpcm_usb -l pl
+%description -n kernel%{_alt_kernel}-smp-misc-lmpcm_usb -l pl.UTF-8
 Ten pakiet zawiera sterownik dla Linuksa SMP do myszy USB Logitech
 MediaPlay Cordless.
 
