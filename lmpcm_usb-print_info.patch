@@ -1,0 +1,29 @@
+--- lmpcm_usb-0.5.5/lmpcm_usb.c.orig	2007-02-08 13:05:33.000000000 +0100
++++ lmpcm_usb-0.5.5/lmpcm_usb.c	2007-02-18 05:10:15.989365937 +0100
+@@ -371,7 +371,7 @@
+ 			sprintf(mouse->name, "%s %s", mouse->name, buf);
+ 
+ 	if (!strlen(mouse->name))
+-		sprintf(mouse->name, "lmpcm_usb.c: Logitech MediaPlay Mouse on usb%04x:%04x",
++		sprintf(mouse->name, "lmpcm_usb: Logitech MediaPlay Mouse on usb%04x:%04x",
+ 			mouse->inputdev->id.vendor, mouse->inputdev->id.product);
+ 
+ 	kfree(buf);
+@@ -389,7 +389,7 @@
+ 	input_register_device(mouse->inputdev);
+ 
+ 
+-	printk(KERN_INFO "lmpcm_usb.c: Detected device: %s\n", mouse->name);
++	printk(KERN_INFO "lmpcm_usb: Detected device: %s\n", mouse->name);
+ 
+ 	// Set usb handler interface data
+ 
+@@ -447,7 +447,7 @@
+ 
+ 	rv = usb_register(&usb_lmpcm_driver);
+ 
+-	info(DRIVER_VERSION ":" DRIVER_DESC);
++	printk(KERN_INFO "lmpcm_usb: %s : %s\n", DRIVER_VERSION, DRIVER_DESC);
+ 
+ 	return rv;
+ }
