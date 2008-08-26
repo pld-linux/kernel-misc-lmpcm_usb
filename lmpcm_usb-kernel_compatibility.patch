@@ -1,5 +1,6 @@
---- lmpcm_usb-0.5.6/lmpcm_usb.c.orig	2008-05-13 13:07:29.000000000 +0200
-+++ lmpcm_usb-0.5.6/lmpcm_usb.c	2008-05-13 13:17:35.881689269 +0200
+diff -U 3 -H -d -r -N -- lmpcm_usb-0.5.6~/lmpcm_usb.c lmpcm_usb-0.5.6/lmpcm_usb.c
+--- lmpcm_usb-0.5.6~/lmpcm_usb.c	2008-08-26 23:22:43.000000000 +0200
++++ lmpcm_usb-0.5.6/lmpcm_usb.c	2008-08-26 23:51:04.000000000 +0200
 @@ -30,7 +30,7 @@
  #include <linux/module.h>
  #include <linux/init.h>
@@ -9,7 +10,31 @@
  
  #define DRIVER_VERSION	"v0.5.6"
  #define DRIVER_AUTHOR	"David Oliveira <d.oliveira@prozone.org>"
-@@ -271,19 +271,31 @@
+@@ -225,7 +225,11 @@
+ 
+ static int usb_lmpcm_open(struct input_dev *dev) {
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 26)
+ 	lmpcm_t *mouse = dev->private;
++#else
++	lmpcm_t *mouse = input_get_drvdata(dev);
++#endif
+ 
+ 	if (mouse->open++)
+ 		return 0;
+@@ -243,7 +247,11 @@
+ 
+ static void usb_lmpcm_close(struct input_dev *dev) {
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 26)
+ 	lmpcm_t *mouse = dev->private;
++#else
++	lmpcm_t *mouse = input_get_drvdata(dev);
++#endif
+ 
+ 	if (!--mouse->open)
+ 		usb_kill_urb(mouse->urb);
+@@ -271,23 +279,39 @@
  	for ( x = 0 ; keys[x] ; x++ )
  		set_bit(keys[x],inputdev->keybit);
  
@@ -43,4 +68,39 @@
 +#endif
  
  	// Private data structure
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 26)
+ 	inputdev->private = mouse;
++#else
++	input_set_drvdata(inputdev, mouse);
++#endif
+ 
+ 	// Input file operations
+ 
+@@ -317,7 +341,7 @@
+ 
+ 	struct usb_endpoint_descriptor *endpoint;
+ 	lmpcm_t *mouse;
+-	int pipe, maxp;
++	int pipe, maxp, ret;
+ 	char *buf;
+ 
+ 
+@@ -386,8 +410,16 @@
+ 
+ 	// Register input device
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 26)
+ 	input_register_device(mouse->inputdev);
+-
++#else
++	ret = input_register_device(mouse->inputdev);
++	if (ret) {
++		input_free_device(mouse->inputdev);
++		lmpcm_free(mouse);
++		return ret;
++	}
++#endif
+ 
+ 	printk(KERN_INFO "lmpcm_usb: Detected device: %s\n", mouse->name);
  
