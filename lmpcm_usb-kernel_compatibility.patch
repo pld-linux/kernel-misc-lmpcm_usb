@@ -1,6 +1,5 @@
-diff -U 3 -H -d -r -N -- lmpcm_usb-0.5.6~/lmpcm_usb.c lmpcm_usb-0.5.6/lmpcm_usb.c
---- lmpcm_usb-0.5.6~/lmpcm_usb.c	2008-08-26 23:22:43.000000000 +0200
-+++ lmpcm_usb-0.5.6/lmpcm_usb.c	2008-08-26 23:51:04.000000000 +0200
+--- lmpcm_usb-0.5.7/lmpcm_usb.c.orig	2009-05-03 14:02:09.000000000 +0200
++++ lmpcm_usb-0.5.7/lmpcm_usb.c	2009-05-03 14:21:55.000000000 +0200
 @@ -30,7 +30,7 @@
  #include <linux/module.h>
  #include <linux/init.h>
@@ -8,85 +7,79 @@ diff -U 3 -H -d -r -N -- lmpcm_usb-0.5.6~/lmpcm_usb.c lmpcm_usb-0.5.6/lmpcm_usb.
 -
 +#include <linux/version.h>
  
- #define DRIVER_VERSION	"v0.5.6"
+ #define DRIVER_VERSION	"v0.5.7"
  #define DRIVER_AUTHOR	"David Oliveira <d.oliveira@prozone.org>"
 @@ -225,7 +225,11 @@
  
  static int usb_lmpcm_open(struct input_dev *dev) {
  
 +#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 26)
- 	lmpcm_t *mouse = dev->private;
++	lmpcm_t *mouse = dev->private;
 +#else
-+	lmpcm_t *mouse = input_get_drvdata(dev);
+ 	lmpcm_t *mouse = input_get_drvdata(dev);
 +#endif
  
  	if (mouse->open++)
  		return 0;
-@@ -243,7 +247,11 @@
+@@ -243,9 +247,11 @@
  
  static void usb_lmpcm_close(struct input_dev *dev) {
  
+-	//lmpcm_t *mouse = dev->private;
 +#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 26)
- 	lmpcm_t *mouse = dev->private;
++	lmpcm_t *mouse = dev->private;
 +#else
-+	lmpcm_t *mouse = input_get_drvdata(dev);
+ 	lmpcm_t *mouse = input_get_drvdata(dev);
+-
 +#endif
  
  	if (!--mouse->open)
  		usb_kill_urb(mouse->urb);
-@@ -271,23 +279,39 @@
+@@ -273,6 +279,25 @@
  	for ( x = 0 ; keys[x] ; x++ )
  		set_bit(keys[x],inputdev->keybit);
  
 +#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 24)
++	// Add basic buttons
 +
- 	// Add basic buttons
- 
--	inputdev->keybit[BIT_WORD(BTN_MOUSE)] = BIT_MASK(BTN_LEFT) | BIT_MASK(BTN_RIGHT) | BIT_MASK(BTN_MIDDLE) |
--					    BIT_MASK(BTN_SIDE) | BIT_MASK(BTN_EXTRA);
 +	inputdev->keybit[LONG(BTN_MOUSE)] = BIT(BTN_LEFT) | BIT(BTN_RIGHT) | BIT(BTN_MIDDLE) |
 +					    BIT(BTN_SIDE) | BIT(BTN_EXTRA);
- 
- 	// Add move mouse movement (X/Y)
- 
--	inputdev->relbit[0] = BIT_MASK(REL_X) | BIT_MASK(REL_Y);
++
++	// Add move mouse movement (X/Y)
++
 +	inputdev->relbit[0] = BIT(REL_X) | BIT(REL_Y);
- 
- 	// Add wheel
- 
++
++	// Add wheel
++
 +	inputdev->relbit[0] |= BIT(REL_WHEEL);
 +
++
++	// Private data structure
++
++	inputdev->private = mouse;
 +#else
-+
-+	inputdev->keybit[BIT_WORD(BTN_MOUSE)] = BIT_MASK(BTN_LEFT) | BIT_MASK(BTN_RIGHT) | BIT_MASK(BTN_MIDDLE) |
-+					    BIT_MASK(BTN_SIDE) | BIT_MASK(BTN_EXTRA);
-+
-+	inputdev->relbit[0] = BIT_MASK(REL_X) | BIT_MASK(REL_Y);
-+
- 	inputdev->relbit[0] |= BIT_MASK(REL_WHEEL);
+ 	// Add basic buttons
  
-+#endif
- 
+ 	inputdev->keybit[BIT_WORD(BTN_MOUSE)] = BIT_MASK(BTN_LEFT) | BIT_MASK(BTN_RIGHT) | BIT_MASK(BTN_MIDDLE) |
+@@ -290,7 +315,7 @@
  	// Private data structure
  
-+#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 26)
- 	inputdev->private = mouse;
-+#else
-+	input_set_drvdata(inputdev, mouse);
+ 	input_set_drvdata(inputdev, mouse);
+-
 +#endif
- 
  	// Input file operations
  
-@@ -317,7 +341,7 @@
+ 	inputdev->open = usb_lmpcm_open;
+@@ -319,7 +344,7 @@
  
  	struct usb_endpoint_descriptor *endpoint;
  	lmpcm_t *mouse;
 -	int pipe, maxp;
-+	int pipe, maxp, ret;
++	int pipe, maxp, error;
  	char *buf;
  
  
-@@ -386,8 +410,16 @@
+@@ -388,8 +413,16 @@
  
  	// Register input device
  
@@ -94,11 +87,11 @@ diff -U 3 -H -d -r -N -- lmpcm_usb-0.5.6~/lmpcm_usb.c lmpcm_usb-0.5.6/lmpcm_usb.
  	input_register_device(mouse->inputdev);
 -
 +#else
-+	ret = input_register_device(mouse->inputdev);
-+	if (ret) {
++	error = input_register_device(mouse->inputdev);
++	if (error) {
 +		input_free_device(mouse->inputdev);
 +		lmpcm_free(mouse);
-+		return ret;
++		return error;
 +	}
 +#endif
  
