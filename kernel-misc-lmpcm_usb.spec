@@ -8,12 +8,12 @@
 Summary:	USB Logitech MediaPlay Cordless Mouse driver for Linux
 Summary(pl.UTF-8):	Sterownik do myszy USB Logitech MediaPlay Cordless
 Name:		kernel%{_alt_kernel}-misc-%{pname}
-Version:	0.5.6
+Version:	0.5.7
 Release:	%{rel}@%{_kernel_ver_str}
 License:	GPL v2
 Group:		Base/Kernel
 Source0:	http://daemon.prozone.org/~david/projects/lmpcm_usb/%{pname}-%{version}.tar.gz
-# Source0-md5:	33cbe52adae24bdf628fe04b254f5d48
+# Source0-md5:	a90b3ad9545b59e36bcc70526c39f028
 Patch0:		%{pname}-print_info.patch
 Patch1:		%{pname}-kernel_compatibility.patch
 URL:		http://daemon.prozone.org/~david/projects/lmpcm_usb/
