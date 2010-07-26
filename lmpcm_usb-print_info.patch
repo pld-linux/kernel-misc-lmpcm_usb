@@ -18,12 +18,3 @@
  
  	// Set usb handler interface data
  
-@@ -447,7 +447,7 @@
- 
- 	rv = usb_register(&usb_lmpcm_driver);
- 
--	info(DRIVER_VERSION ":" DRIVER_DESC);
-+	printk(KERN_INFO "lmpcm_usb: %s : %s\n", DRIVER_VERSION, DRIVER_DESC);
- 
- 	return rv;
- }
